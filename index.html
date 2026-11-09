@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="uk"><head><meta charset="utf-8"><title>ФінКвест · клікабельний прототип v1</title>
+<meta name="description" content="Клікабельний прототип застосунку ФінКвест: прогноз «вистачить на N днів» і прогрес до цілі">
+<meta property="og:title" content="ФінКвест · клікабельний прототип">
+<meta property="og:description" content="Спробуйте: поставте ціль, підключіть картку (демо) і додайте витрату через панель чарівника">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%8E%AF%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=Rubik:wght@500;700&display=swap">
+<style>
+:root{--pg:#EEF0F8;--pt:#1D1A3B;--pm:#5E6075;--pc:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--pg:#0F1020;--pt:#F6F4EE;--pm:#A9ACD0;--pc:#1A1C3A}}
+:root[data-theme="dark"]{--pg:#0F1020;--pt:#F6F4EE;--pm:#A9ACD0;--pc:#1A1C3A}
+*{box-sizing:border-box}body{margin:0;background:var(--pg);color:var(--pt);font-family:Nunito,Arial,sans-serif;display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:flex-start;padding:20px}
+.ph{width:360px;height:720px;background:#14153A;color:#F6F4EE;border-radius:34px;border:8px solid #2B2D63;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.sc{display:none;flex:1;flex-direction:column;padding:22px 18px 12px;overflow:auto;gap:12px}.sc.on{display:flex}
+h1{font:700 22px Rubik,Arial,sans-serif;margin:6px 0 0}h2{font:700 15px Rubik,Arial,sans-serif;margin:0}p{margin:0;font-size:14px;line-height:1.35;color:#C9CBE6}
+.cd{background:#1F2150;border-radius:16px;padding:14px;border:1px solid #33377A}
+.big{font:700 40px Rubik,Arial,sans-serif;color:#F59E2B}.mu{font-size:12px;color:#A9ACD0}
+.bt{background:#F59E2B;color:#1D1A3B;border:0;border-radius:14px;padding:13px;font:700 15px Rubik,Arial,sans-serif;cursor:pointer;width:100%}
+.bt.g{background:transparent;color:#A9ACD0;font-weight:500}
+.ch{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid #4a4fa0;border-radius:20px;padding:9px 13px;font-size:14px;cursor:pointer;background:#1F2150;color:#F6F4EE}.chip.on{background:#7B61FF;border-color:#7B61FF}
+.bar{height:9px;border-radius:5px;background:#2B2D63;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:#7B61FF;border-radius:5px}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:14px}
+.st{border-radius:12px;padding:9px 12px;font-size:13px;font-weight:800}.ok{background:#12391f;color:#4ADE80}.wn{background:#4a1626;color:#FB7185}
+.tab{display:flex;border-top:1px solid #33377A;background:#181A44}.tab button{flex:1;background:none;border:0;color:#A9ACD0;padding:11px 0 13px;font:600 12px Nunito,Arial,sans-serif;cursor:pointer}.tab button.on{color:#F59E2B}
+.tg{width:46px;height:26px;border-radius:13px;background:#2B2D63;position:relative;cursor:pointer;flex:none}.tg i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#F6F4EE;transition:.2s}.tg.on{background:#7B61FF}.tg.on i{left:23px}
+.wz{width:300px;background:var(--pc);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:10px;color:var(--pt)}
+.wz p{color:var(--pm)}.wz button{border:1px solid #7B61FF;background:transparent;color:var(--pt);border-radius:10px;padding:10px;font:600 14px Nunito,Arial,sans-serif;cursor:pointer;text-align:left}
+</style></head><body>
+<div class="ph">
+<div class="sc on" id="goal"><p class="mu">Крок 1 з 2</p><h1>Яка твоя ціль?</h1><p>Обери або введи свою – ми покажемо, як ти до неї рухаєшся.</p>
+<div class="ch" id="chips"></div>
+<div class="cd"><div class="mu">Сума цілі</div><div class="big" id="gsum">–</div><div class="mu">Бажана дата: за 4 місяці</div></div>
+<div style="flex:1"></div><button class="bt" onclick="go('card')">Далі</button></div>
+<div class="sc" id="card"><p class="mu">Крок 2 з 2</p><h1>Підключи картку – без ручного введення</h1>
+<div class="cd"><h2>Що ми бачимо</h2><p>Лише операції: сума, дата, категорія.</p></div>
+<div class="cd"><h2>Чого ми не бачимо</h2><p>Дані картки та CVV. Платити за тебе ми не можемо.</p></div>
+<div class="cd"><h2>Ти керуєш</h2><p>Відключити можна будь-коли в налаштуваннях.</p></div>
+<div style="flex:1"></div><button class="bt" onclick="go('home')">Підключити (демо)</button><button class="bt g" onclick="go('home')">Пізніше</button></div>
+<div class="sc" id="home"><p class="mu">Привіт! Твій стан на сьогодні</p>
+<div class="cd"><div class="mu">Грошей вистачить на</div><div class="big"><span id="days">9</span> дн.</div><div class="mu">До стипендії: <span id="left">12</span> дн. · Можна витрачати до <b id="safe">300</b> грн/день</div><div id="stt" class="st wn" style="margin-top:10px"></div></div>
+<div class="cd"><div class="row"><h2 id="gname">Ноутбук</h2><span class="mu" id="gpct">32%</span></div><div class="bar"><i id="gbar" style="width:32%"></i></div><div class="mu" style="margin-top:6px" id="gtxt"></div></div>
+<div class="cd" id="cats"></div><div id="warn"></div></div>
+<div class="sc" id="goal2"><h1>Моя ціль</h1><div class="cd"><div class="row"><h2 id="g2n">Ноутбук</h2><span class="mu" id="g2p"></span></div><div class="bar"><i id="g2b"></i></div><div class="mu" style="margin-top:8px" id="g2t"></div></div>
+<div class="cd"><h2>Сходинки</h2><div id="steps" style="margin-top:8px;display:flex;flex-direction:column;gap:8px"></div></div>
+<button class="bt" onclick="addGoal(500)">+500 грн у ціль</button></div>
+<div class="sc" id="learn"><h1>ОВДП за 30 секунд</h1><div class="cd"><h2>Що це</h2><p>Ти позичаєш гроші державі й отримуєш за це відсотки.</p></div>
+<div class="cd"><h2>Де заробляєш</h2><p>Відсотки виплачуються у вказані дати, а на кінець строку повертається вся сума.</p></div>
+<div class="cd"><h2>А якщо гроші потрібні раніше?</h2><p>Облігацію можна продати до кінця строку, але ціна може відрізнятися від тієї, за яку купував.</p></div>
+<p class="mu">Навчальна довідка, не фінансова порада.</p></div>
+<div class="sc" id="fam"><h1>Поділитися з рідними?</h1><p>Ти вирішуєш, що бачать батьки, і можеш вимкнути доступ будь-коли.</p>
+<div class="cd row"><h2>Запросити батьків</h2><div class="tg" id="tg" onclick="tgl()"><i></i></div></div>
+<div class="cd" id="lvl" style="opacity:.4"><h2>Що вони бачать</h2><div class="ch" style="margin-top:8px"><span class="chip on" onclick="lv(this,0)">Лише прогрес</span><span class="chip" onclick="lv(this,1)">Прогрес і суми</span></div>
+<div class="cd" style="margin-top:12px;background:#14153A"><div class="mu">Так бачитимуть батьки:</div><div id="pv" style="margin-top:4px;font-size:14px"></div></div></div></div>
+<div class="tab" id="tab" style="display:none"><button class="on" onclick="go('home')">Головна</button><button onclick="go('goal2')">Ціль</button><button onclick="go('learn')">Дізнатись</button><button onclick="go('fam')">Родина</button></div>
+</div>
+<div class="wz"><h2 style="font:700 16px Rubik,Arial,sans-serif">Режим чарівника</h2><p>Wizard of Oz: імітуємо автоімпорт з картки. Додай витрату – головний екран перерахується.</p>
+<button onclick="spend('Їжа',80)">Кава −80 грн</button><button onclick="spend('Доставка',250)">Доставка −250 грн</button><button onclick="spend('Одяг',1200)">Одяг −1 200 грн</button><button onclick="rst()" style="border-color:#8886a8">Скинути</button>
+<p>Версія 1 · low-fi · дані умовні.</p></div>
+<script>
+var G=[['Навушники',4500],['Ноутбук',30000],['Подушка',10000]],gi=1,saved,bal,left=12,rate=400,C,par=0;
+function fmt(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')}
+function rst(){bal=3600;saved=9600;C=[['Їжа',2100,3000],['Доставка',1100,1500],['Транспорт',600,1000],['Підписки',300,500],['Одяг',400,1500]];draw()}
+function go(id){document.querySelectorAll('.sc').forEach(function(e){e.classList.toggle('on',e.id==id)});var t=document.getElementById('tab');t.style.display=(id=='goal'||id=='card')?'none':'flex';var m={home:0,goal2:1,learn:2,fam:3}[id];[].forEach.call(t.children,function(b,i){b.classList.toggle('on',i===m)});draw()}
+function spend(c,a){C.forEach(function(x){if(x[0]==c)x[1]+=a});bal-=a;draw()}
+function addGoal(a){saved+=a;draw()}
+function tgl(){par=!par;document.getElementById('tg').classList.toggle('on',par);document.getElementById('lvl').style.opacity=par?1:.4;draw()}
+function lv(e,n){lvl=n;[].forEach.call(e.parentNode.children,function(x){x.classList.remove('on')});e.classList.add('on');draw()}
+var lvl=0;
+function draw(){var g=G[gi],p=Math.min(100,Math.round(saved/g[1]*100)),d=Math.max(0,Math.floor(bal/rate));
+document.getElementById('gsum').textContent=fmt(g[1])+' грн';
+document.getElementById('days').textContent=d;document.getElementById('left').textContent=left;document.getElementById('safe').textContent=fmt(Math.max(0,bal/left));
+var s=document.getElementById('stt');if(d>=left){s.className='st ok';s.textContent='Грошей вистачить до стипендії'}else{s.className='st wn';s.textContent='Не вистачить на '+(left-d)+' дн. – зменш витрати до '+fmt(bal/left)+' грн/день'}
+['gname','g2n'].forEach(function(i){document.getElementById(i).textContent=g[0]});document.getElementById('gpct').textContent=p+'%';document.getElementById('g2p').textContent=p+'%';
+['gbar','g2b'].forEach(function(i){document.getElementById(i).style.width=p+'%'});
+var t=fmt(saved)+' з '+fmt(g[1])+' грн';document.getElementById('gtxt').textContent=t;document.getElementById('g2t').textContent=t+' · лишилось '+fmt(g[1]-saved)+' грн';
+var h='<h2>Витрати цього місяця</h2>',w='';C.forEach(function(x){var q=Math.round(x[1]/x[2]*100);h+='<div style="margin-top:10px"><div class="row"><span>'+x[0]+'</span><span class="mu">'+fmt(x[1])+' / '+fmt(x[2])+' грн</span></div><div class="bar"><i style="width:'+Math.min(100,q)+'%;background:'+(q>=80?'#FB7185':'#7B61FF')+'"></i></div></div>';if(q>=80)w+='<div class="st wn" style="margin-top:8px">«'+x[0]+'» уже на '+q+'% місячного ліміту</div>'});
+document.getElementById('cats').innerHTML=h;document.getElementById('warn').innerHTML=w;
+var st=document.getElementById('steps');st.innerHTML='';[25,50,75,100].forEach(function(m){st.innerHTML+='<div class="row"><span>'+(p>=m?'✅ ':'⬜ ')+m+'% цілі</span><span class="mu">'+fmt(g[1]*m/100)+' грн</span></div>'});
+document.getElementById('pv').innerHTML=par?(lvl?'Ціль «'+g[0]+'»: '+p+'% · відкладено '+fmt(saved)+' грн':'Ціль «'+g[0]+'»: '+p+'%'):'Нічого: доступ вимкнено'}
+var ch=document.getElementById('chips');G.forEach(function(g,i){var e=document.createElement('span');e.className='chip'+(i==gi?' on':'');e.textContent=g[0];e.onclick=function(){gi=i;[].forEach.call(ch.children,function(x,j){x.classList.toggle('on',j==i)});draw()};ch.appendChild(e)});
+rst();
+</script></body></html>
